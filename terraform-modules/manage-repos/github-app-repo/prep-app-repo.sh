@@ -23,23 +23,39 @@ ksa=${6}
 env=${7}
 index=${8}
 region=${9}
+monorepo_name=${10}
+app_runtime=${11}
+
 repo=${application_name}
 #The following code is to avoid race condition to the commits done to acm repo in different folders by this script
 sleep_time=20
 sleep_index=$((${index}+1))
 sleep_total=$((${sleep_time}*${sleep_index}))
 sleep $sleep_total
+
+# Clone the newly created app repo
+git clone https://github.com/${github_org}/${repo} ${repo}
+
+# Clone the monorepo to get the template
+git clone -b dev https://github.com/${github_org}/${monorepo_name} monorepo-temp
+
 for branch in "main"
 do
-  git clone -b ${branch} https://github.com/${github_org}/${repo} ${repo}
-  cd ${repo}
-  find . -type f -name "*.yaml" -exec  sed -i "s/YOUR_APPLICATION/${application_name}/g" {} +
-  find ./k8s/${env} -type f -name "*.yaml" -exec  sed -i "s/NAMESPACE/${namespace}/g" {} +
-  find ./k8s/${env} -type f -name "*.yaml" -exec  sed -i "s/SERVICEACCOUNT/${ksa}/g" {} +
-  find . -type f -name "cloudbuild.yaml" -exec  sed -i "s/YOUR_REGION/${region}/g" {} +
-  git add .
-  git config --global user.name ${github_user}
-  git config --global user.email ${github_email}
-  git commit -m "IGNORE running the trigger.Setting up app code repo for the first time."
-  git push origin
+  (
+    cd ${repo}
+    git checkout -b ${branch} 2>/dev/null || git checkout ${branch}
+
+    # Copy files from monorepo template directory
+    cp -r ../monorepo-temp/templates/app-templates/${app_runtime}/* .
+
+    find . -type f -name "*.yaml" -exec  sed -i "s/YOUR_APPLICATION/${application_name}/g" {} +
+    find ./k8s/${env} -type f -name "*.yaml" -exec  sed -i "s/NAMESPACE/${namespace}/g" {} +
+    find ./k8s/${env} -type f -name "*.yaml" -exec  sed -i "s/SERVICEACCOUNT/${ksa}/g" {} +
+    find . -type f -name "cloudbuild.yaml" -exec  sed -i "s/YOUR_REGION/${region}/g" {} +
+    git add .
+    git config --global user.name ${github_user}
+    git config --global user.email ${github_email}
+    git commit -m "IGNORE running the trigger.Setting up app code repo for the first time."
+    git push origin ${branch}
+  )
 done

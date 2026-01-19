@@ -18,7 +18,7 @@ steps:
 - name: 'gcr.io/cloud-builders/git'
   id: 'clone platform-repos'
   entrypoint: /bin/sh
-  args: [ '-c', 'git clone https://${_GITHUB_USER}:$$GITHUB_TOKEN@github.com/${_GITHUB_ORG}/$REPO_NAME' ]
+  args: [ '-c', 'git clone -b dev https://${_GITHUB_USER}:$$GITHUB_TOKEN@github.com/${_GITHUB_ORG}/$REPO_NAME' ]
   secretEnv: ['GITHUB_TOKEN']
 
 
@@ -26,14 +26,14 @@ steps:
 - name: 'gcr.io/cloud-builders/gcloud'
   id : 'Initialize dir structure'
   entrypoint: 'bash'
-  args: [ '-xe','./setup/init.sh','${_GITHUB_USER}', '${_SA_TO_IMPERSONATE}', '${REPO_NAME}' ]
+  args: [ '-xe','./$REPO_NAME/${_APP_FACTORY_DIR}/setup/init.sh','${_GITHUB_USER}', '${_SA_TO_IMPERSONATE}', '$REPO_NAME/${_APP_FACTORY_DIR}' ]
   secretEnv: ['GITHUB_TOKEN']
 
 
 - name: 'gcr.io/cloud-builders/gcloud'
   id: 'create tf file for app, commit it in github repo and push'
   entrypoint: 'bash'
-  args: [ '-xe','./setup/generateAppTFCode.sh','${_APP_RUNTIME}','${_APP_NAME}','${_SA_TO_IMPERSONATE}', '${_INFRA_PROJECT_ID}','${_GITHUB_USER}', '${PROJECT_ID}', '${_FOLDER_ID}', '${_GITHUB_ORG}', '${REPO_NAME}', '${_TRIGGER_TYPE}', '${_GITHUB_TEAM}','${_REGION}' ]
+  args: [ '-xe','./$REPO_NAME/${_APP_FACTORY_DIR}/setup/generateAppTFCode.sh','${_APP_RUNTIME}','${_APP_NAME}','${_SA_TO_IMPERSONATE}', '${_INFRA_PROJECT_ID}','${_GITHUB_USER}', '${PROJECT_ID}', '${_FOLDER_ID}', '${_GITHUB_ORG}', '$REPO_NAME/${_APP_FACTORY_DIR}', '${_TRIGGER_TYPE}', '${_GITHUB_TEAM}','${_REGION}' ]
   secretEnv: ['GITHUB_TOKEN']
 
 availableSecrets:

@@ -23,25 +23,36 @@ project_id=${6}
 ci_sa=${7}
 region=${8}
 trigger_type=${9}
+monorepo_name=${10}
 
 
 repo=${application_name}-infra
-for branch in "cicd-trigger"
+# Clone the newly created infra repo
+git clone https://github.com/${github_org}/${repo} ${repo}
+
+# Clone the monorepo to get the template
+git clone -b dev https://github.com/${github_org}/${monorepo_name} monorepo-temp
+
+for branch in "cicd-trigger" "dev" "staging" "prod"
 do
-  git clone -b ${branch} https://github.com/${github_org}/${repo} ${repo}
-  cd ${repo}
+  (
+    cd ${repo}
+    git checkout -b ${branch} 2>/dev/null || git checkout ${branch}
 
+    # Copy files from monorepo template directory
+    cp -r ../monorepo-temp/templates/infra-template/* .
 
-  find . -type f -name "*.tf" -exec  sed -i "s/YOUR_APP_ADMIN_PROJECT/${project_id}/g" {} +
-  find . -type f -name "*.tf" -exec  sed -i "s/YOUR_APPLICATION/${application_name}/g" {} +
-  find . -type f -name "*.tf" -exec  sed -i "s:YOUR_CI_SA:${ci_sa}:g" {} +
-  find . -type f -name "*.tf" -exec  sed -i "s/YOUR_REGION/${region}/g" {} +
-  find . -type f -name "cloudbuild.yaml" -exec  sed -i "s:YOUR_CI_SA:${ci_sa}:g" {} +
-  find . -type f -name "*.tf" -exec  sed -i "s/YOUR_TRIGGER_TYPE/${trigger_type}/g" {} +
-  find . -type f -name "*.tf" -exec  sed -i "s/YOUR_TERRAFORM_STATE_BUCKET/${state_bucket}/g" {} +
-  git add .
-  git config --global user.name ${github_user}
-  git config --global user.email ${github_email}
-  git commit -m "IGNORE running the trigger.Setting up infra repo for the first time."
-  git push origin
+    find . -type f -name "*.tf" -exec  sed -i "s/YOUR_APP_ADMIN_PROJECT/${project_id}/g" {} +
+    find . -type f -name "*.tf" -exec  sed -i "s/YOUR_APPLICATION/${application_name}/g" {} +
+    find . -type f -name "*.tf" -exec  sed -i "s:YOUR_CI_SA:${ci_sa}:g" {} +
+    find . -type f -name "*.tf" -exec  sed -i "s/YOUR_REGION/${region}/g" {} +
+    find . -type f -name "cloudbuild.yaml" -exec  sed -i "s:YOUR_CI_SA:${ci_sa}:g" {} +
+    find . -type f -name "*.tf" -exec  sed -i "s/YOUR_TRIGGER_TYPE/${trigger_type}/g" {} +
+    find . -type f -name "*.tf" -exec  sed -i "s/YOUR_TERRAFORM_STATE_BUCKET/${state_bucket}/g" {} +
+    git add .
+    git config --global user.name ${github_user}
+    git config --global user.email ${github_email}
+    git commit -m "IGNORE running the trigger.Setting up infra repo for the first time."
+    git push origin ${branch}
+  )
 done

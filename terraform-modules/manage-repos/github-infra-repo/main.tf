@@ -27,29 +27,22 @@ resource "github_repository" "infrastructure_repo" {
   allow_rebase_merge     = true
   delete_branch_on_merge = false
   vulnerability_alerts   = true
-  template {
-    owner      = "${var.org_name_to_clone_template_from}"
-    repository = "infra-template"
-  }
 }
 
 resource "github_branch" "infrastructure_repo_dev" {
   repository    = github_repository.infrastructure_repo.name
-  source_branch = "cicd-trigger"
   branch        = "dev"
   depends_on    = [github_repository.infrastructure_repo]
 }
 
 resource "github_branch" "infrastructure_repo_staging" {
   repository    = github_repository.infrastructure_repo.name
-  source_branch = "cicd-trigger"
   branch        = "staging"
   depends_on    = [github_repository.infrastructure_repo]
 }
 
 resource "github_branch" "infrastructure_repo_prod" {
   repository    = github_repository.infrastructure_repo.name
-  source_branch = "cicd-trigger"
   branch        = "prod"
   depends_on    = [github_repository.infrastructure_repo]
 }
@@ -101,7 +94,7 @@ resource "null_resource" "set-repo" {
     id = github_repository.infrastructure_repo.id
   }
   provisioner "local-exec" {
-    command = "${path.module}/prep-infra-repo.sh ${var.org_name_to_clone_template_from} ${var.application_name} ${var.github_user} ${var.github_email} ${var.state_bucket} ${var.project_id} ${var.ci_sa} ${var.region} ${var.trigger_type}"
+    command = "${path.module}/prep-infra-repo.sh ${var.org_name_to_clone_template_from} ${var.application_name} ${var.github_user} ${var.github_email} ${var.state_bucket} ${var.project_id} ${var.ci_sa} ${var.region} ${var.trigger_type} ${var.monorepo_name}"
   }
   depends_on = [github_repository.infrastructure_repo, github_branch.infrastructure_repo_prod, github_branch.infrastructure_repo_staging ]
 }

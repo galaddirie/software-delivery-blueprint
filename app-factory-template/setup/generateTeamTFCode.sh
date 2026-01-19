@@ -22,7 +22,8 @@ raw_team_name=${3}
 repo=${4}
 teams_basedir="teams"
 configdir="config/teams-configs"
-teams_module="git::https://github.com/${org}/terraform-modules.git//manage-teams"
+monorepo_name=$(echo ${repo} | cut -d'/' -f1)
+teams_module="git::https://github.com/${org}/${monorepo_name}.git//terraform-modules/manage-teams?ref=dev"
 
 cd ${repo}
 target_dir="teams"  #This is where all teams related tf files will be created
@@ -120,6 +121,6 @@ git add ${team_name}.tf outputs.tf
 git config --global user.name ${user}
 git config --global user.email ${email}
 git commit -m "Cloud Build: Adding new team ${raw_team_name} to the software delivery platform."
-git push origin main
+git push origin dev
 
 

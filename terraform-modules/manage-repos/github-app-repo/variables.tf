@@ -24,6 +24,11 @@ variable "org_name_to_clone_template_from" {
   description = "GitHub org where the repo will be created."
 }
 
+variable "monorepo_name" {
+  type        = string
+  description = "Name of the monorepo containing templates."
+}
+
 variable "trigger_type" {
   type        = string
   default     = "webhook"

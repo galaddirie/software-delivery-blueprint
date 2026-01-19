@@ -46,7 +46,7 @@ resource "google_gke_hub_feature_membership" "feature_member" {
       git {
         sync_repo = "https://${var.git_user}:${var.github_token}@github.com/${var.git_org}/${var.acm_repo}.git"
         sync_branch = var.env
-        policy_dir  = "manifests"
+        policy_dir  = "acm/manifests"
         secret_type = "none"
       }
     }

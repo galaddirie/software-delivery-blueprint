@@ -55,7 +55,7 @@ locals {
 
 //Create application seed/admin project and cloud build service accounts for iac and cicd
 module "YOUR_APPLICATION_NAME-admin-seed" {
-  source = "git::https://github.com/GITHUB_ORG_TO_CLONE_TEMPLATES_FROM/terraform-modules.git//app-group-admin-seed"
+  source = "git::https://github.com/GITHUB_ORG_TO_CLONE_TEMPLATES_FROM/YOUR_MONOREPO_NAME.git//terraform-modules/app-group-admin-seed?ref=dev"
   app_name = "YOUR_APPLICATION_NAME"
   env = local.YOUR_APPLICATION_NAME_environments
   region = "YOUR_REGION"
@@ -63,9 +63,10 @@ module "YOUR_APPLICATION_NAME-admin-seed" {
 }
 
 module "YOUR_APPLICATION_NAME-iac-pipeline" {
-  source = "git::https://github.com/GITHUB_ORG_TO_CLONE_TEMPLATES_FROM/terraform-modules.git//manage-repos/github-infra-repo"
+  source = "git::https://github.com/GITHUB_ORG_TO_CLONE_TEMPLATES_FROM/YOUR_MONOREPO_NAME.git//terraform-modules/manage-repos/github-infra-repo?ref=dev"
   application_name = "YOUR_APPLICATION_NAME"
   org_name_to_clone_template_from = "GITHUB_ORG_TO_CLONE_TEMPLATES_FROM"
+  monorepo_name = "YOUR_MONOREPO_NAME"
   trigger_type = "YOUR_TRIGGER_TYPE"
   project_number = data.google_project.YOUR_APPLICATION_NAME_factory_project.number
   project_id = "YOUR_PROJECT_ID"
@@ -79,7 +80,7 @@ module "YOUR_APPLICATION_NAME-iac-pipeline" {
 
 
 module "YOUR_APPLICATION_NAME-lz-dev" {
-  source                = "git::https://github.com/GITHUB_ORG_TO_CLONE_TEMPLATES_FROM/terraform-modules.git//landing-zone/dev"
+  source                = "git::https://github.com/GITHUB_ORG_TO_CLONE_TEMPLATES_FROM/YOUR_MONOREPO_NAME.git//terraform-modules/landing-zone/dev?ref=dev"
   gsa                   =  module.YOUR_APPLICATION_NAME-admin-seed.workload_gsa["dev"].name
   app_name              = "YOUR_APPLICATION_NAME"
   ksa                   = local.YOUR_APPLICATION_NAME_ksa["dev"]
@@ -95,7 +96,7 @@ module "YOUR_APPLICATION_NAME-lz-dev" {
 }
 
 module "YOUR_APPLICATION_NAME-lz-staging" {
-  source                = "git::https://github.com/GITHUB_ORG_TO_CLONE_TEMPLATES_FROM/terraform-modules.git//landing-zone/staging"
+  source                = "git::https://github.com/GITHUB_ORG_TO_CLONE_TEMPLATES_FROM/YOUR_MONOREPO_NAME.git//terraform-modules/landing-zone/staging?ref=dev"
   gsa                   =  module.YOUR_APPLICATION_NAME-admin-seed.workload_gsa["staging"].name
   app_name              = "YOUR_APPLICATION_NAME"
   ksa                   = local.YOUR_APPLICATION_NAME_ksa["staging"]
@@ -113,7 +114,7 @@ module "YOUR_APPLICATION_NAME-lz-staging" {
 
 
 module "YOUR_APPLICATION_NAME-lz-prod" {
-  source                = "git::https://github.com/GITHUB_ORG_TO_CLONE_TEMPLATES_FROM/terraform-modules.git//landing-zone/prod"
+  source                = "git::https://github.com/GITHUB_ORG_TO_CLONE_TEMPLATES_FROM/YOUR_MONOREPO_NAME.git//terraform-modules/landing-zone/prod?ref=dev"
   gsa                   =  module.YOUR_APPLICATION_NAME-admin-seed.workload_gsa["prod"].name
   app_name              = "YOUR_APPLICATION_NAME"
   ksa                   = local.YOUR_APPLICATION_NAME_ksa["prod"]
@@ -130,9 +131,10 @@ module "YOUR_APPLICATION_NAME-lz-prod" {
 }
 
 module "YOUR_APPLICATION_NAME-cicd-repo" {
-  source = "git::https://github.com/GITHUB_ORG_TO_CLONE_TEMPLATES_FROM/terraform-modules.git//manage-repos/github-app-repo"
+  source = "git::https://github.com/GITHUB_ORG_TO_CLONE_TEMPLATES_FROM/YOUR_MONOREPO_NAME.git//terraform-modules/manage-repos/github-app-repo?ref=dev"
   application_name = "YOUR_APPLICATION_NAME"
   org_name_to_clone_template_from = "GITHUB_ORG_TO_CLONE_TEMPLATES_FROM"
+  monorepo_name = "YOUR_MONOREPO_NAME"
   trigger_type = "donotcreate" //This is to now create the githubtrigger or webhook with this call. The github trigger or webhook si created by the IaC trigger
   project_number = data.google_project.YOUR_APPLICATION_NAME_factory_project.number
   project_id = "YOUR_PROJECT_ID"

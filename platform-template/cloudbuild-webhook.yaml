@@ -22,7 +22,7 @@ steps:
     echo "###########"
     echo $branch
     echo "###########"
-    git clone -b ${branch} https://$$GITHUB_USER:$$GITHUB_TOKEN@github.com/${_REPO}  platform-repo
+    git clone -b ${branch} https://$$GITHUB_USER:$$GITHUB_TOKEN@github.com/${_REPO}  monorepo
   id: clone git
   entrypoint: sh
   secretEnv:
@@ -34,7 +34,7 @@ steps:
   - |
     git config --global url."https://$$GITHUB_USER:$$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
     branch=`echo "${_REF}" | cut -d "/" -f3`
-    cd platform-repo
+    cd monorepo/${_PLATFORM_DIR}
 
     if [ -d "env/$branch/" ]; then
       cd env/$branch
@@ -70,7 +70,7 @@ steps:
     git config --global url."https://$$GITHUB_USER:$$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
     
     branch=`echo "${_REF}" | cut -d "/" -f3`
-    cd platform-repo
+    cd monorepo/${_PLATFORM_DIR}
     
     if [ -d "env/$branch/" ]; then
       cd env/$branch
@@ -108,7 +108,7 @@ steps:
     git config --global url."https://$$GITHUB_USER:$$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
     
     branch=`echo "${_REF}" | cut -d "/" -f3`
-    cd platform-repo
+    cd monorepo/${_PLATFORM_DIR}
 
     if [ -d "env/$branch/" ]; then
       cd env/$branch

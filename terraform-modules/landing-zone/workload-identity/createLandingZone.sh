@@ -29,8 +29,8 @@ kubernetes_sa=${9}
 random=$(echo $RANDOM | md5sum | head -c 20; echo)
 local_acm_repo="${acm_repo}-${random}"
 git config --global url."https://${github_user}:${github_token}@github.com".insteadOf "https://github.com"
-git clone https://${github_user}:${github_token}@github.com/${github_org}/${acm_repo} ${local_acm_repo}
-cd ${local_acm_repo}
+git clone -b ${env} https://${github_user}:${github_token}@github.com/${github_org}/${acm_repo} ${local_acm_repo}
+cd ${local_acm_repo}/acm
 if [ ! -d "manifests/apps/${app_name}" ] ; then
   mkdir manifests/apps/${app_name}
   echo "copying the templates"

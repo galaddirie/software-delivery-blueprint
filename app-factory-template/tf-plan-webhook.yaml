@@ -17,7 +17,7 @@ steps:
 - name: 'gcr.io/cloud-builders/git'
   id: 'clone repo'
   entrypoint: /bin/sh
-  args: [ '-c', 'git clone https://${_GITHUB_USER}:$$GITHUB_TOKEN@github.com/${_GITHUB_ORG}/${_REPO_NAME}' ]
+  args: [ '-c', 'git clone -b dev https://${_GITHUB_USER}:$$GITHUB_TOKEN@github.com/${_GITHUB_ORG}/${_REPO_NAME}' ]
   secretEnv: ['GITHUB_TOKEN']
   
 - id: 'tf init'
@@ -29,7 +29,7 @@ steps:
       echo ""
       echo "*************** TERRAFORM INIT ******************"
       git config --global url."https://${_GITHUB_USER}:$$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
-      cd ${_REPO_NAME}
+      cd ${_REPO_NAME}/${_APP_FACTORY_DIR}
       terraform init || exit 1
   secretEnv: ['GITHUB_TOKEN']
       
@@ -43,7 +43,7 @@ steps:
       echo "*************** TERRAFOM PLAN ******************"
 
       git config --global url."https://${_GITHUB_USER}:$$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
-      cd ${_REPO_NAME}
+      cd ${_REPO_NAME}/${_APP_FACTORY_DIR}
       terraform plan || exit 1
   secretEnv: ['GITHUB_TOKEN']
 

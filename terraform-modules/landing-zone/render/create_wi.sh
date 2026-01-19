@@ -28,11 +28,11 @@ sleep_index=$((${index}+1))
 sleep_total=$((${sleep_time}*${sleep_index}))
 sleep $sleep_total
 random=$(echo $RANDOM | md5sum | head -c 20; echo)
-git clone -b main https://${git_user}:${TF_VAR_github_token}@github.com/${git_org}/${tf_modules_repo} workload-identity-${random}
+git clone -b dev https://${git_user}:${TF_VAR_github_token}@github.com/${git_org}/${tf_modules_repo} workload-identity-${random}
 cd workload-identity-${random}
 
-git checkout main
-cd landing-zone
+git checkout dev
+cd terraform-modules/landing-zone
 mkdir ${env}
 cp render/workload-identity.tpl ./${env}/${cluster_project_id}-${cluster_name}.tf
 cp render/variables.tpl ./${env}/variables.tf

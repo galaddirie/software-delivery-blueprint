@@ -23,6 +23,7 @@ steps:
       echo ""
       echo "*************** TERRAFORM INIT ******************"
       git config --global url."https://${_GITHUB_USER}:$$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
+      cd ${_APP_FACTORY_DIR}
       terraform init || exit 1
   secretEnv: ['GITHUB_TOKEN']
 
@@ -35,7 +36,7 @@ steps:
       echo ""
       echo "*************** TERRAFOM APPLY ******************"
       git config --global url."https://${_GITHUB_USER}:$$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
-
+      cd ${_APP_FACTORY_DIR}
       terraform apply -auto-approve || exit 1
   secretEnv: ['GITHUB_TOKEN']
 

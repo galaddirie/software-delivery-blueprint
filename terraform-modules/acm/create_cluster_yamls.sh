@@ -21,10 +21,10 @@ github_email=${4}
 cluster_env=${5}
 cluster_name=${6}
 
-git clone -b dev https://${github_user}:${TF_VAR_github_token}@github.com/${github_org}/${acm_repo_name} ${acm_repo_name}
-cd ${acm_repo_name}
+git clone -b ${cluster_env} https://${github_user}:${TF_VAR_github_token}@github.com/${github_org}/${acm_repo_name} ${acm_repo_name}
+cd ${acm_repo_name}/acm
 
-git checkout dev
+git checkout ${cluster_env}
 cd manifests/clusters
 
 cp ../../templates/_cluster-template/cluster.yaml ./${cluster_name}-cluster.yaml

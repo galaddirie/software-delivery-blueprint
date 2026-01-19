@@ -21,11 +21,11 @@ github_email=${4}
 service_account_name=${5}
 cluster_name=${6}
 
-git clone -b main https://${github_user}:${TF_VAR_github_token}@github.com/${github_org}/${tf_modules_repo} artifact-registry-${tf_modules_repo}
+git clone -b dev https://${github_user}:${TF_VAR_github_token}@github.com/${github_org}/${tf_modules_repo} artifact-registry-${tf_modules_repo}
 cd artifact-registry-${tf_modules_repo}
 
-git checkout main
-cd artifact-registry
+git checkout dev
+cd terraform-modules/artifact-registry
 if [ ! -f ${cluster_name}.tf ]; then
   cp render/iam-member.tpl ./${cluster_name}.tf
 

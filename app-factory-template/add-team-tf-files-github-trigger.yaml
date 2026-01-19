@@ -17,13 +17,13 @@ steps:
 - name: 'gcr.io/cloud-builders/git'
   id: 'clone platform-repos'
   entrypoint: /bin/sh
-  args: [ '-c', 'git clone https://${_GITHUB_USER}:$$GITHUB_TOKEN@github.com/${_GITHUB_ORG}/$REPO_NAME' ]
+  args: [ '-c', 'git clone -b dev https://${_GITHUB_USER}:$$GITHUB_TOKEN@github.com/${_GITHUB_ORG}/$REPO_NAME' ]
   secretEnv: ['GITHUB_TOKEN']
 
 - name: 'gcr.io/cloud-builders/git'
   id: 'create tf files'
   entrypoint: 'bash'
-  args: [ '-xe','./setup/generateTeamTFCode.sh','${_GITHUB_USER}','${_GITHUB_ORG}','${_TEAM_NAME}', '${REPO_NAME}' ]
+  args: [ '-xe','./$REPO_NAME/${_APP_FACTORY_DIR}/setup/generateTeamTFCode.sh','${_GITHUB_USER}','${_GITHUB_ORG}','${_TEAM_NAME}', '$REPO_NAME/${_APP_FACTORY_DIR}' ]
   secretEnv: ['GITHUB_TOKEN']
 
 

@@ -47,6 +47,9 @@ if [ ! -f apps/${app_runtime}/${app_name}.tf ]; then
   sed -i "s/YOUR_GITHUB_TEAM/${github_team}/g" ${app_name}.tf
   sed -i "s/YOUR_REGION/${region}/g" ${app_name}.tf
 
+  monorepo_name=$(echo ${repo} | cut -d'/' -f1)
+  sed -i "s/YOUR_MONOREPO_NAME/${monorepo_name}/g" ${app_name}.tf
+
 
 
   if [ -z ${folder_id} ]; then
@@ -60,7 +63,7 @@ if [ ! -f apps/${app_runtime}/${app_name}.tf ]; then
   git config --global user.email ${email}
   git config --list
   git commit -m "Cloud Build: Adding new application ${app_name} to the software delivery platform."
-  git push origin main
+  git push origin dev
 
 else
   echo "*** Application with name ${app_runtime}/${app_name} already exists. ***"

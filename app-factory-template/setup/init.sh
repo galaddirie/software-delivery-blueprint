@@ -34,6 +34,6 @@ EOF
         git config --global user.email ${email}
         git add apps/${app}/variables.tf apps/main.tf 
         git commit -m "Cloud Build: Adding new folder for runtime ${app}."
-        git push origin main
+        git push origin dev
       fi
     done
